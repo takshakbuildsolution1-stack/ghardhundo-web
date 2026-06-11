@@ -2,26 +2,245 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── @property for rotating border ── */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Base reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #07070f;
+  color: white;
+  font-family: var(--font-sora), sans-serif;
+  overflow-x: hidden;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* ── Grid overlay ── */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── Orbs ── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-1 {
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(255,107,53,0.13) 0%, transparent 70%);
+  top: -200px; right: -150px;
+  animation: orbMove1 9s ease-in-out infinite alternate;
+}
+.orb-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(240,165,0,0.09) 0%, transparent 70%);
+  bottom: -150px; left: -100px;
+  animation: orbMove2 11s ease-in-out infinite alternate;
+}
+.orb-3 {
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(46,204,138,0.07) 0%, transparent 70%);
+  top: 35%; left: 25%;
+  animation: orbMove3 7s ease-in-out infinite alternate;
+}
+
+/* ── Glassmorphism card ── */
+.glass-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+}
+.glass-card-saffron {
+  background: rgba(255,107,53,0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,107,53,0.18);
+  border-radius: 14px;
+  box-shadow: 0 0 40px rgba(255,107,53,0.07), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* ── Rotating border CTA ── */
+.rotating-border-wrap {
+  position: relative;
+  padding: 2px;
+  border-radius: 12px;
+  background: conic-gradient(from var(--angle), #FF6B35 0%, #F0A500 25%, #FF6B35 50%, #F0A500 75%, #FF6B35 100%);
+  animation: rotateBorder 2.5s linear infinite;
+  display: inline-block;
+  text-decoration: none;
+}
+.rotating-border-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #12060a;
+  border-radius: 10px;
+  padding: 14px 28px;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.rotating-border-wrap:hover .rotating-border-inner { background: #1e0a10; }
+.rotating-border-wrap-sm .rotating-border-inner {
+  padding: 9px 22px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+/* ── Animated gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #FF6B35 0%, #F0A500 60%, #FF6B35 100%);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradShift 3s linear infinite;
+}
+
+/* ── Cursor blink ── */
+.cursor-blink { animation: blink 1s step-end infinite; color: #FF6B35; }
+
+/* ── Data flow line ── */
+.data-flow-line {
+  position: absolute;
+  left: -30px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,107,53,0.3) 20%, rgba(255,107,53,0.3) 80%, transparent 100%);
+  overflow: hidden;
+}
+.data-flow-line::after {
+  content: '';
+  position: absolute;
+  left: -1px; width: 3px; height: 60px;
+  background: linear-gradient(180deg, transparent, #FF6B35, #F0A500, transparent);
+  animation: dataFlow 2s linear infinite;
+  box-shadow: 0 0 8px rgba(255,107,53,0.6);
+}
+
+/* ── Seat dots ── */
+.seat-dot {
+  width: 28px; height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.07);
+}
+.seat-dot-filled { background: #2ECC8A; }
+.seat-dot-pending {
+  background: #FF6B35;
+  animation: pulseDot 1.5s infinite;
+  box-shadow: 0 0 8px rgba(255,107,53,0.4);
+}
+
+/* ── AI scan line (on AI match card) ── */
+.ai-scan {
+  position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,107,53,0.9), rgba(240,165,0,0.9), transparent);
+  animation: aiScan 3s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(255,107,53,0.5);
+  pointer-events: none;
+}
+
+/* ── How it works connector ── */
+.connector-line {
+  position: absolute;
+  top: 28px; left: calc(33% + 20px); right: calc(33% + 20px);
+  height: 1px;
+  background: rgba(255,107,53,0.2);
+  overflow: hidden;
+}
+.connector-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B35, #F0A500);
+  animation: connectorDraw 1s ease forwards;
+  transform-origin: left;
+}
+
+/* ── Scroll-snap carousel (mobile testimonials) ── */
+.snap-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 16px;
+  padding-bottom: 12px;
+}
+.snap-scroll::-webkit-scrollbar { display: none; }
+.snap-item { scroll-snap-align: start; flex-shrink: 0; }
+
+/* ── Keyframes ── */
+@keyframes orbMove1 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(-60px,40px) scale(1.1); }
+}
+@keyframes orbMove2 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(40px,-60px) scale(1.15); }
+}
+@keyframes orbMove3 {
+  from { transform: translate(0,0); }
+  to   { transform: translate(80px,-40px); }
+}
+@keyframes gradShift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes rotateBorder { to { --angle: 360deg; } }
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+@keyframes ripple1 {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes ripple2 {
+  0%   { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(3); opacity: 0; }
+}
+@keyframes dataFlow {
+  0%   { top: -60px; }
+  100% { top: 100%; }
+}
+@keyframes aiScan {
+  0%   { top: 0; opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { top: calc(100% - 2px); opacity: 1; }
+  60%  { opacity: 0; }
+  100% { top: 0; opacity: 0; }
+}
+@keyframes scanSweep {
+  0%   { top: -2px; opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100vh; opacity: 0; }
+}
+@keyframes connectorDraw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes arrowScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-22px); }
+}
+@keyframes seatFillAnim {
+  from { width: 0; }
+  to   { width: 80%; }
 }
