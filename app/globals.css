@@ -244,3 +244,29 @@ body {
   from { width: 0; }
   to   { width: 80%; }
 }
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Activity ticker ── */
+.ticker-track { animation: tickerScroll 40s linear infinite; }
+
+/* ── Range input (savings calculator) ── */
+input[type='range'] { -webkit-appearance: none; appearance: none; }
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #FF6B35;
+  border: 3px solid #07070f;
+  box-shadow: 0 0 0 2px #FF6B35, 0 0 16px rgba(255,107,53,0.4);
+  cursor: pointer;
+}
+input[type='range']::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #FF6B35;
+  border: 3px solid #07070f;
+  cursor: pointer;
+}
