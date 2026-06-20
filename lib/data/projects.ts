@@ -11,6 +11,13 @@ export interface PublicProject {
   stage: string
   rera_id: string
   builder_score: number | null
+  carpet_area_min: number | null
+  carpet_area_max: number | null
+  total_units: number | null
+  sold_units: number | null
+  available_units: number | null
+  booked_units: number | null
+  sales_velocity_pct: number | null
 }
 
 export async function fetchPublicProjects(): Promise<PublicProject[]> {

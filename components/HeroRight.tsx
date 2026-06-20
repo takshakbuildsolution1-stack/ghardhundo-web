@@ -3,9 +3,9 @@ import { formatPrice } from '@/lib/data/projects'
 import { LINKS } from '@/lib/analytics'
 
 const FALLBACK_CARDS: PublicProject[] = [
-  { project_id: '1', project_name: 'West Pune · 2BHK', developer_name: '', micro_market: 'Baner', corridor_zone: '', price_min: 58, price_max: 78, bhk_types: ['2BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null },
-  { project_id: '2', project_name: 'East Pune · 3BHK', developer_name: '', micro_market: 'Kharadi', corridor_zone: '', price_min: 105, price_max: 130, bhk_types: ['3BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null },
-  { project_id: '3', project_name: 'North Pune · 2BHK', developer_name: '', micro_market: 'Moshi', corridor_zone: '', price_min: 45, price_max: 62, bhk_types: ['2BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null },
+  { project_id: '1', project_name: 'West Pune · 2BHK', developer_name: '', micro_market: 'Baner', corridor_zone: '', price_min: 58, price_max: 78, bhk_types: ['2BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null, carpet_area_min: null, carpet_area_max: null, total_units: null, sold_units: null, available_units: null, booked_units: null, sales_velocity_pct: null },
+  { project_id: '2', project_name: 'East Pune · 3BHK', developer_name: '', micro_market: 'Kharadi', corridor_zone: '', price_min: 105, price_max: 130, bhk_types: ['3BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null, carpet_area_min: null, carpet_area_max: null, total_units: null, sold_units: null, available_units: null, booked_units: null, sales_velocity_pct: null },
+  { project_id: '3', project_name: 'North Pune · 2BHK', developer_name: '', micro_market: 'Moshi', corridor_zone: '', price_min: 45, price_max: 62, bhk_types: ['2BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null, carpet_area_min: null, carpet_area_max: null, total_units: null, sold_units: null, available_units: null, booked_units: null, sales_velocity_pct: null },
 ]
 
 interface Props {
