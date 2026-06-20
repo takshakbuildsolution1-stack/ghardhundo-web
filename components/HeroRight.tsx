@@ -2,6 +2,12 @@ import type { PublicProject } from '@/lib/data/projects'
 import { formatPrice } from '@/lib/data/projects'
 import { LINKS } from '@/lib/analytics'
 
+const FALLBACK_CARDS: PublicProject[] = [
+  { project_id: '1', project_name: 'West Pune · 2BHK', developer_name: '', micro_market: 'Baner', corridor_zone: '', price_min: 58, price_max: 78, bhk_types: ['2BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null },
+  { project_id: '2', project_name: 'East Pune · 3BHK', developer_name: '', micro_market: 'Kharadi', corridor_zone: '', price_min: 105, price_max: 130, bhk_types: ['3BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null },
+  { project_id: '3', project_name: 'North Pune · 2BHK', developer_name: '', micro_market: 'Moshi', corridor_zone: '', price_min: 45, price_max: 62, bhk_types: ['2BHK'], possession_date: null, stage: 'under_construction', rera_id: '', builder_score: null },
+]
+
 interface Props {
   projects: PublicProject[]
 }
@@ -81,20 +87,20 @@ export function HeroRight({ projects }: Props) {
       </div>
 
       {/* Live project cards */}
-      {(cards.length > 0 ? cards : [{ project_id: '1', project_name: 'Pune West · 2BHK', micro_market: 'Baner', price_min: 58, price_max: 78 }, { project_id: '2', project_name: 'Pune East · 3BHK', micro_market: 'Kharadi', price_min: 105, price_max: 130 }, { project_id: '3', project_name: 'North Pune · 2BHK', micro_market: 'Moshi', price_min: 45, price_max: 62 }]).map((card) => (
+      {(cards.length > 0 ? cards : FALLBACK_CARDS).map((card) => (
         <a
-          key={'project_id' in card ? card.project_id : card.project_id}
+          key={card.project_id}
           href={LINKS.register}
           className="glass-card p-3.5 flex items-center justify-between cursor-pointer transition-all hover:-translate-x-1.5 group"
           style={{ textDecoration: 'none' }}
         >
           <div>
-            <div className="text-[13px] font-bold text-white mb-0.5">{'project_name' in card ? card.project_name : ''}</div>
-            <div className="text-[11px] text-white/30">{'micro_market' in card ? card.micro_market : ''}</div>
+            <div className="text-[13px] font-bold text-white mb-0.5">{card.project_name}</div>
+            <div className="text-[11px] text-white/30">{card.micro_market}</div>
           </div>
           <div className="text-right">
             <div className="text-[13px] font-bold text-white">
-              {formatPrice('price_min' in card ? card.price_min : 60, 'price_max' in card ? card.price_max : 90)}
+              {formatPrice(card.price_min, card.price_max)}
             </div>
             <div className="text-[10px] text-mint mt-1">MahaRERA ✓</div>
           </div>
