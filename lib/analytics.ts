@@ -1,4 +1,4 @@
-const APP_BASE = 'https://app.ghardhundo.com'
+const APP_BASE = 'https://ghardhundo-platform.vercel.app'
 
 export function appLink(path: string, utmCampaign: string): string {
   const url = new URL(path, APP_BASE)
@@ -9,8 +9,8 @@ export function appLink(path: string, utmCampaign: string): string {
 }
 
 export const LINKS = {
-  register: appLink('/register', 'hero-cta'),
-  registerNav: appLink('/register', 'nav-cta'),
-  registerFooter: appLink('/register', 'footer-cta'),
-  projectBase: (id: string) => appLink(`/projects/${id}`, 'project-card'),
+  register: appLink('/chat', 'hero-cta'),
+  registerNav: appLink('/chat', 'nav-cta'),
+  registerFooter: appLink('/chat', 'footer-cta'),
+  projectBase: (id: string) => appLink(`/project/${id}`, 'project-card'),
 }
