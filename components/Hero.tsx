@@ -2,10 +2,17 @@
 import { useScroll, useTransform, motion } from 'framer-motion'
 import { HeroLeft } from '@/components/HeroLeft'
 import { HeroRight } from '@/components/HeroRight'
-import { SeatProgressBar } from '@/components/ui/SeatProgressBar'
+import type { PublicProject } from '@/lib/data/projects'
+import { formatPrice } from '@/lib/data/projects'
 import { LINKS } from '@/lib/analytics'
 
-function MobileHeroCard() {
+interface Props {
+  projects: PublicProject[]
+}
+
+function MobileHeroCard({ projects }: { projects: PublicProject[] }) {
+  const main = projects[0] ?? null
+
   return (
     <div className="lg:hidden mt-10">
       <div className="glass-card-saffron p-5 relative overflow-hidden">
@@ -19,24 +26,23 @@ function MobileHeroCard() {
         </div>
         <div className="flex justify-between items-center mb-3">
           <div>
-            <div className="text-white font-bold text-[15px]">Lodha Belmondo</div>
-            <div className="text-white/30 text-[11px]">Wakad · 2BHK / 3BHK</div>
+            <div className="text-white font-bold text-[15px]">{main ? main.project_name : 'Top AI match'}</div>
+            <div className="text-white/30 text-[11px]">{main ? `${main.micro_market} · ${main.bhk_types.slice(0, 2).join('/')}` : 'West Pune · 2BHK / 3BHK'}</div>
           </div>
           <div>
-            <div className="text-white font-extrabold text-xl">₹82L</div>
-            <div className="text-[11px] font-bold text-mint text-right">Save ₹8.4L</div>
+            <div className="text-white font-extrabold text-xl">{main ? formatPrice(main.price_min, main.price_max) : '₹65–90L'}</div>
+            <div className="text-[11px] font-bold text-mint text-right">Best Offer</div>
           </div>
         </div>
-        <SeatProgressBar total={5} filled={4} />
         <div className="flex justify-between text-[10px] text-white/30 mt-1.5">
-          <span>4 / 5 seats filled</span>
-          <a href={LINKS.register} className="text-saffron font-semibold">Join group →</a>
+          <span>MahaRERA Verified</span>
+          <a href={LINKS.register} className="text-saffron font-semibold">Get Best Offer →</a>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mt-3">
         {[
-          { label: '₹84L', sub: 'Avg. saving' },
+          { label: '₹12L', sub: 'Max. saving' },
           { label: '0%', sub: 'Brokerage' },
           { label: '5 min', sub: 'AI match' },
           { label: '100+', sub: 'Projects' },
@@ -51,30 +57,21 @@ function MobileHeroCard() {
   )
 }
 
-export function Hero() {
+export function Hero({ projects }: Props) {
   const { scrollY } = useScroll()
   const y1 = useTransform(scrollY, [0, 600], [0, -80])
   const y2 = useTransform(scrollY, [0, 600], [0, -40])
 
   return (
     <section className="relative z-[1] min-h-screen px-8 lg:px-16 pt-[130px] pb-20">
-      {/* Parallax orb overrides */}
-      <motion.div
-        style={{ y: y1 }}
-        className="absolute pointer-events-none"
-        aria-hidden
-      />
-      <motion.div
-        style={{ y: y2 }}
-        className="absolute pointer-events-none"
-        aria-hidden
-      />
+      <motion.div style={{ y: y1 }} className="absolute pointer-events-none" aria-hidden />
+      <motion.div style={{ y: y2 }} className="absolute pointer-events-none" aria-hidden />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[60px] items-center">
         <HeroLeft />
-        <MobileHeroCard />
+        <MobileHeroCard projects={projects} />
         <div className="hidden lg:block">
-          <HeroRight />
+          <HeroRight projects={projects} />
         </div>
       </div>
     </section>

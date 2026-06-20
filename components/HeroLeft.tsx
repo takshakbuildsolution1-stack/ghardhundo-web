@@ -4,7 +4,7 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
 import { LINKS } from '@/lib/analytics'
 
 const STATS = [
-  { prefix: '₹', suffix: 'L', to: 84, label: 'Avg. group saving', green: false },
+  { prefix: '₹', suffix: 'L', to: 12, label: 'Max. saving per buyer', green: false },
   { prefix: '',  suffix: '+', to: 100, label: 'Live projects', green: false },
   { prefix: '',  suffix: ' min', to: 5, label: 'AI match time', green: false },
   { prefix: '',  suffix: '%', to: 0, label: 'Brokerage', green: true },
@@ -14,7 +14,7 @@ const TRUST_PILLS = [
   '✓ MahaRERA verified',
   '✓ Zero brokerage',
   '✓ AI-matched',
-  '✓ Group discount',
+  '✓ Best offer',
 ]
 
 export function HeroLeft() {
@@ -51,12 +51,12 @@ export function HeroLeft() {
       >
         Buy smarter.<br />
         Save <span className="gradient-text">₹10 lakhs.</span><br />
-        Together.
+        Zero brokerage.
       </h1>
 
       <p className="text-[15px] text-white/40 leading-relaxed max-w-[440px] mb-9">
-        Priya AI shortlists MahaRERA-verified projects for you in 5 minutes.
-        Join a group of 5, unlock developer discounts. Zero brokerage.
+        Priya AI shortlists MahaRERA-verified projects matched to your profile.
+        Our advisors negotiate the best offer on your behalf. Zero brokerage, guaranteed.
       </p>
 
       <div className="flex items-center gap-3.5">

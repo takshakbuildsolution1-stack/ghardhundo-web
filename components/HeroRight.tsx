@@ -1,13 +1,15 @@
-import { SeatProgressBar } from '@/components/ui/SeatProgressBar'
+import type { PublicProject } from '@/lib/data/projects'
+import { formatPrice } from '@/lib/data/projects'
 import { LINKS } from '@/lib/analytics'
 
-const SMALL_CARDS = [
-  { name: 'Godrej Woodsville', loc: 'Baner · 2/3BHK', price: '₹58–78L', filled: 3 },
-  { name: 'Kolte Patil 24K',   loc: 'Kharadi · 3BHK',  price: '₹1.1Cr+',  filled: 2 },
-  { name: 'VTP Belair',        loc: 'Moshi · 1/2BHK',  price: '₹45–62L', filled: 1 },
-]
+interface Props {
+  projects: PublicProject[]
+}
 
-export function HeroRight() {
+export function HeroRight({ projects }: Props) {
+  const main = projects[0] ?? null
+  const cards = projects.slice(1, 4)
+
   return (
     <div className="relative flex flex-col gap-2.5">
       <div className="data-flow-line" />
@@ -29,33 +31,35 @@ export function HeroRight() {
           </div>
         </div>
 
-        <div className="text-base font-bold text-white mb-0.5">Lodha Belmondo</div>
-        <div className="text-[11px] text-white/30 mb-3.5">Wakad, West Pune · 2BHK / 3BHK</div>
-
-        <div className="flex justify-between items-center mb-2.5">
-          <div className="text-[22px] font-extrabold text-white">₹82L</div>
-          <div
-            className="text-[11px] font-bold text-mint px-2.5 py-1 rounded-full"
-            style={{ background: 'rgba(46,204,138,0.12)', border: '1px solid rgba(46,204,138,0.25)' }}
-          >
-            Save ₹8.4L
-          </div>
-        </div>
-
-        <div className="flex justify-between text-[10px] text-white/30 mb-1.5">
-          <span>Group seats</span><span>4 / 5 filled</span>
-        </div>
-        <div className="h-1.5 rounded-full overflow-hidden mb-2" style={{ background: 'rgba(255,255,255,0.07)' }}>
-          <div
-            className="h-full rounded-full"
-            style={{
-              background: 'linear-gradient(90deg,#2ECC8A,#FF6B35)',
-              animation: 'seatFillAnim 1.5s 1.5s ease both',
-              width: 0,
-            }}
-          />
-        </div>
-        <SeatProgressBar total={5} filled={4} />
+        {main ? (
+          <>
+            <div className="text-base font-bold text-white mb-0.5">{main.project_name}</div>
+            <div className="text-[11px] text-white/30 mb-3.5">{main.micro_market} · {main.bhk_types.slice(0, 2).join(' / ')}</div>
+            <div className="flex justify-between items-center mb-2.5">
+              <div className="text-[22px] font-extrabold text-white">{formatPrice(main.price_min, main.price_max)}</div>
+              <div
+                className="text-[11px] font-bold text-mint px-2.5 py-1 rounded-full"
+                style={{ background: 'rgba(46,204,138,0.12)', border: '1px solid rgba(46,204,138,0.25)' }}
+              >
+                Best Offer
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-base font-bold text-white mb-0.5">Top AI match</div>
+            <div className="text-[11px] text-white/30 mb-3.5">West Pune · 2BHK / 3BHK</div>
+            <div className="flex justify-between items-center mb-2.5">
+              <div className="text-[22px] font-extrabold text-white">₹65–90L</div>
+              <div
+                className="text-[11px] font-bold text-mint px-2.5 py-1 rounded-full"
+                style={{ background: 'rgba(46,204,138,0.12)', border: '1px solid rgba(46,204,138,0.25)' }}
+              >
+                Best Offer
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="flex items-center gap-2.5 mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="relative w-10 h-10 flex-shrink-0">
@@ -76,26 +80,28 @@ export function HeroRight() {
         </div>
       </div>
 
-      {/* Small project cards */}
-      {SMALL_CARDS.map(card => (
+      {/* Live project cards */}
+      {(cards.length > 0 ? cards : [{ project_id: '1', project_name: 'Pune West · 2BHK', micro_market: 'Baner', price_min: 58, price_max: 78 }, { project_id: '2', project_name: 'Pune East · 3BHK', micro_market: 'Kharadi', price_min: 105, price_max: 130 }, { project_id: '3', project_name: 'North Pune · 2BHK', micro_market: 'Moshi', price_min: 45, price_max: 62 }]).map((card) => (
         <a
-          key={card.name}
+          key={'project_id' in card ? card.project_id : card.project_id}
           href={LINKS.register}
           className="glass-card p-3.5 flex items-center justify-between cursor-pointer transition-all hover:-translate-x-1.5 group"
           style={{ textDecoration: 'none' }}
         >
           <div>
-            <div className="text-[13px] font-bold text-white mb-0.5">{card.name}</div>
-            <div className="text-[11px] text-white/30">{card.loc}</div>
+            <div className="text-[13px] font-bold text-white mb-0.5">{'project_name' in card ? card.project_name : ''}</div>
+            <div className="text-[11px] text-white/30">{'micro_market' in card ? card.micro_market : ''}</div>
           </div>
           <div className="text-right">
-            <div className="text-[13px] font-bold text-white mb-1.5">{card.price}</div>
-            <SeatProgressBar total={5} filled={card.filled} />
+            <div className="text-[13px] font-bold text-white">
+              {formatPrice('price_min' in card ? card.price_min : 60, 'price_max' in card ? card.price_max : 90)}
+            </div>
+            <div className="text-[10px] text-mint mt-1">MahaRERA ✓</div>
           </div>
         </a>
       ))}
 
-      {/* Saving banner */}
+      {/* Savings banner */}
       <div
         className="rounded-[14px] p-4 flex items-center justify-between"
         style={{
@@ -104,14 +110,14 @@ export function HeroRight() {
         }}
       >
         <div>
-          <div className="text-[10px] text-white/30 uppercase tracking-[1px] mb-1">Last group saved</div>
-          <div className="text-[26px] font-extrabold text-saffron">₹9.2L / buyer</div>
+          <div className="text-[10px] text-white/30 uppercase tracking-[1px] mb-1">Best savings achieved</div>
+          <div className="text-[26px] font-extrabold text-saffron">₹12L / buyer</div>
         </div>
         <div
           className="text-[10px] font-bold text-mint text-right px-3 py-2 rounded-xl"
           style={{ background: 'rgba(46,204,138,0.12)', border: '1px solid rgba(46,204,138,0.25)' }}
         >
-          12 groups<br />forming now
+          Zero<br />brokerage
         </div>
       </div>
     </div>

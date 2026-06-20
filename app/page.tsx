@@ -14,8 +14,15 @@ import { Footer } from '@/components/Footer'
 import { MobileCTA } from '@/components/MobileCTA'
 import { NeuralCanvas } from '@/components/ui/NeuralCanvas'
 import { ScanLine } from '@/components/ui/ScanLine'
+import { fetchPublicProjects } from '@/lib/data/projects'
 
-export default function Home() {
+export default async function Home() {
+  const projects = await fetchPublicProjects()
+
+  const developers = Array.from(
+    new Set(projects.map(p => p.developer_name))
+  ).slice(0, 8)
+
   return (
     <>
       <NeuralCanvas />
@@ -26,11 +33,11 @@ export default function Home() {
       <div className="orb orb-3" />
       <Nav />
       <main>
-        <Hero />
+        <Hero projects={projects} />
         <ActivityTicker />
-        <DeveloperLogos />
+        <DeveloperLogos developers={developers} />
         <HowItWorks />
-        <FeaturedProjects />
+        <FeaturedProjects projects={projects} />
         <SavingsCalculator />
         <PuneMap />
         <ComparisonTable />

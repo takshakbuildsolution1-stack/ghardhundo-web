@@ -6,8 +6,8 @@ import { LINKS } from '@/lib/analytics'
 
 const MIN = 40
 const MAX = 200
-const GROUP_DISCOUNT_RATE = 0.10  // 10% of purchase price
-const BROKER_RATE = 0.02          // 2% broker commission
+const NEGOTIATION_RATE = 0.10
+const BROKER_RATE = 0.02
 
 function formatLakhs(val: number) {
   if (val >= 100) return `₹${(val / 100).toFixed(1)}Cr`
@@ -17,9 +17,9 @@ function formatLakhs(val: number) {
 export function SavingsCalculator() {
   const [budget, setBudget] = useState(80)
 
-  const groupSaving = Math.round(budget * GROUP_DISCOUNT_RATE)
+  const negotiationSaving = Math.round(budget * NEGOTIATION_RATE)
   const brokerageSaving = Math.round(budget * BROKER_RATE)
-  const totalSaving = groupSaving + brokerageSaving
+  const totalSaving = negotiationSaving + brokerageSaving
   const pct = ((budget - MIN) / (MAX - MIN)) * 100
 
   return (
@@ -34,17 +34,15 @@ export function SavingsCalculator() {
           <h2 className="font-serif italic text-white mb-3" style={{ fontSize: 'clamp(32px, 4vw, 52px)' }}>
             How much will you save?
           </h2>
-          <p className="text-white/40 text-[15px]">Move the slider to your budget. See your group saving instantly.</p>
+          <p className="text-white/40 text-[15px]">Move the slider to your budget. See your potential saving instantly.</p>
         </div>
 
         <div className="glass-card p-8">
-          {/* Budget display */}
           <div className="text-center mb-8">
             <div className="text-[13px] text-white/30 uppercase tracking-widest mb-2">Your budget</div>
             <div className="text-5xl font-extrabold text-white">{formatLakhs(budget)}</div>
           </div>
 
-          {/* Slider */}
           <div className="relative mb-10">
             <input
               type="range"
@@ -63,16 +61,15 @@ export function SavingsCalculator() {
             </div>
           </div>
 
-          {/* Results */}
           <div className="grid grid-cols-3 gap-4 mb-8">
             <motion.div
-              key={groupSaving}
+              key={negotiationSaving}
               initial={{ scale: 0.95, opacity: 0.7 }}
               animate={{ scale: 1, opacity: 1 }}
               className="glass-card p-4 text-center"
             >
-              <div className="text-[10px] text-white/30 uppercase tracking-wider mb-2">Group discount</div>
-              <div className="text-2xl font-extrabold text-saffron">₹{groupSaving}L</div>
+              <div className="text-[10px] text-white/30 uppercase tracking-wider mb-2">Best offer saving</div>
+              <div className="text-2xl font-extrabold text-saffron">₹{negotiationSaving}L</div>
               <div className="text-[10px] text-white/20 mt-1">~10% off price</div>
             </motion.div>
 
@@ -107,7 +104,6 @@ export function SavingsCalculator() {
           </div>
         </div>
       </motion.div>
-
     </section>
   )
 }

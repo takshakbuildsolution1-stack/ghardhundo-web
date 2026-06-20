@@ -39,23 +39,13 @@ function AIIcon() {
   )
 }
 
-function GroupIcon() {
+function OfferIcon() {
   return (
     <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
-      {[8, 16, 24].map((cx, i) => (
-        <g key={cx}>
-          <motion.circle cx={cx} cy="13" r="4" stroke="#FF6B35" strokeWidth="1.6"
-            initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-            transition={{ duration: 0.35, delay: i * 0.15 }} />
-          <motion.path d={`M${cx - 6} 27 Q${cx - 6} 20 ${cx} 20 Q${cx + 6} 20 ${cx + 6} 27`}
-            stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" fill="none"
-            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.45 + i * 0.1 }} />
-        </g>
-      ))}
-      <motion.path d="M8 27 Q16 24 24 27" stroke="rgba(255,107,53,0.3)" strokeWidth="1" strokeLinecap="round" fill="none"
-        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.9 }} />
+      <motion.path d="M6 16 L16 6 L26 16 L16 26 Z" stroke="#FF6B35" strokeWidth="1.8" strokeLinejoin="round"
+        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }} />
+      <motion.path d="M12 16.5 L14.5 19 L20 13" stroke="#FF6B35" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.8 }} />
     </svg>
   )
 }
@@ -75,9 +65,9 @@ const STEPS = [
   },
   {
     number: '03',
-    Icon: GroupIcon,
-    title: 'Join a Group',
-    desc: '5 AI-matched buyers → one developer negotiation → group discount. Zero brokerage charged.',
+    Icon: OfferIcon,
+    title: 'Get Best Offer',
+    desc: 'Our advisors negotiate the best price with the developer on your behalf. Zero brokerage, guaranteed.',
   },
 ]
 
@@ -98,7 +88,7 @@ export function HowItWorks() {
           How GharDhundo works
         </h2>
         <p className="text-white/40 text-[15px] max-w-[480px] mx-auto">
-          From first chat to group booking — usually under 48 hours.
+          From first chat to best offer — usually under 48 hours.
         </p>
       </motion.div>
 

@@ -2,13 +2,13 @@
 import { motion } from 'framer-motion'
 
 const ROWS = [
-  { label: 'Brokerage',         gd: '0%',       broker: '2% of price', direct: '0%',    gdWin: true },
-  { label: 'Group discount',    gd: '8–12%',    broker: 'None',        direct: 'None',  gdWin: true },
-  { label: 'AI matching',       gd: '5 min',    broker: 'Weeks',       direct: 'DIY',   gdWin: true },
-  { label: 'MahaRERA verified', gd: '100%',     broker: 'Sometimes',   direct: 'Manual',gdWin: true },
-  { label: 'Upfront cost',      gd: '₹0',       broker: '₹0',          direct: '₹0',    gdWin: false },
-  { label: 'Negotiating power', gd: 'Group (5x)','broker': 'Solo',     direct: 'Solo',  gdWin: true },
-  { label: 'Net saving on ₹80L',gd: '~₹10L',   broker: '–₹1.6L',     direct: '₹0',    gdWin: true },
+  { label: 'Brokerage',            gd: '0%',           broker: '2% of price', direct: '0%',     gdWin: true },
+  { label: 'Best offer guarantee', gd: '8–12% off',    broker: 'None',        direct: 'None',   gdWin: true },
+  { label: 'AI matching',          gd: '5 min',        broker: 'Weeks',       direct: 'DIY',    gdWin: true },
+  { label: 'MahaRERA verified',    gd: '100%',         broker: 'Sometimes',   direct: 'Manual', gdWin: true },
+  { label: 'Upfront cost',         gd: '₹0',           broker: '₹0',          direct: '₹0',     gdWin: false },
+  { label: 'Negotiating power',    gd: 'Expert team',  broker: 'Solo',        direct: 'Solo',   gdWin: true },
+  { label: 'Net saving on ₹80L',   gd: '~₹10L',        broker: '–₹1.6L',     direct: '₹0',     gdWin: true },
 ]
 
 export function ComparisonTable() {
@@ -28,7 +28,6 @@ export function ComparisonTable() {
         </div>
 
         <div className="glass-card overflow-hidden">
-          {/* Header */}
           <div className="grid grid-cols-4 text-[11px] font-bold uppercase tracking-wider" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="p-4 text-white/30">Feature</div>
             <div className="p-4 text-center" style={{ background: 'rgba(255,107,53,0.08)' }}>

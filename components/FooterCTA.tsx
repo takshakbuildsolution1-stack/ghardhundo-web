@@ -13,10 +13,10 @@ export function FooterCTA() {
         className="max-w-3xl mx-auto text-center"
       >
         <h2 className="font-serif italic text-white mb-6" style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}>
-          Your group is forming now.
+          Your best offer is one step away.
         </h2>
         <p className="text-white/40 text-[15px] mb-10 max-w-[440px] mx-auto">
-          Join free. No upfront payment. Priya AI will match you to the right group in minutes.
+          Join free. No upfront payment. Priya AI will match you to the right projects in minutes.
         </p>
         <RotatingBorderButton href={LINKS.registerFooter} className="mx-auto">
           Find My Home
