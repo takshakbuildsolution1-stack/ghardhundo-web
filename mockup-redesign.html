@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GharDhundo — Redesign Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" crossorigin />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #07070F; --surface: #0E0E1A;
+    --glass: rgba(255,255,255,0.04); --glass-border: rgba(255,255,255,0.07);
+    --saffron: #FF6B35; --saffron-glow: rgba(255,107,53,0.18);
+    --mint: #2ECC8A; --mint-glow: rgba(46,204,138,0.12);
+    --white: #FFFFFF; --muted: rgba(255,255,255,0.55); --dim: rgba(255,255,255,0.18);
+    /* Font stacks — Bricolage Grotesque has personality at heavy weights */
+    --font-display: 'Bricolage Grotesque', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Instrument Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--white); font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  /* ── GLOBAL BACKGROUND ── */
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .page-content { position: relative; z-index: 1; }
+
+  /* Grid overlay */
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 100%);
+  }
+
+  /* Radial glows */
+  .glow-orb {
+    position: fixed; border-radius: 50%; pointer-events: none; filter: blur(80px);
+  }
+  .glow-orb-1 { width: 600px; height: 600px; top: -200px; left: -100px; background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%); }
+  .glow-orb-2 { width: 500px; height: 500px; top: 20%; right: -150px; background: radial-gradient(circle, rgba(46,204,138,0.08) 0%, transparent 70%); }
+  .glow-orb-3 { width: 400px; height: 400px; top: 60%; left: 30%; background: radial-gradient(circle, rgba(255,107,53,0.06) 0%, transparent 70%); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+    background: rgba(7,7,15,0.75); backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .logo { font-family: var(--font-display); font-weight: 800; font-size: 20px; }
+  .logo span { color: var(--saffron); }
+  nav .nav-links { display: flex; gap: 32px; align-items: center; }
+  nav .nav-links a { color: rgba(255,255,255,0.6); font-size: 14px; text-decoration: none; transition: color .2s; font-weight: 500; }
+  nav .nav-links a:hover { color: var(--white); }
+  .nav-cta { background: var(--saffron); color: #fff; padding: 10px 22px; border-radius: 100px; font-size: 14px; font-weight: 600; text-decoration: none; transition: opacity .2s; box-shadow: 0 0 24px rgba(255,107,53,0.3); }
+  .nav-cta:hover { opacity: .85; }
+
+  /* ── HERO ── */
+  .hero-wrap { max-width: 1200px; margin: 0 auto; padding: 100px 48px 120px; position: relative; }
+
+  /* Floating particles */
+  .particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .particle {
+    position: absolute; width: 2px; height: 2px; border-radius: 50%;
+    background: var(--saffron); opacity: 0;
+    animation: floatParticle var(--dur, 8s) var(--delay, 0s) infinite ease-in-out;
+  }
+  .particle.mint { background: var(--mint); }
+  @keyframes floatParticle {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.3; }
+    100% { transform: translateY(-120px) translateX(var(--dx, 20px)); opacity: 0; }
+  }
+
+  /* Data flow lines */
+  .data-lines { position: absolute; right: 0; top: 0; width: 50%; height: 100%; pointer-events: none; overflow: hidden; opacity: 0.4; }
+  .data-line {
+    position: absolute; width: 1px; background: linear-gradient(180deg, transparent, var(--saffron), transparent);
+    animation: dataFlow var(--speed, 3s) var(--delay, 0s) infinite linear;
+    height: 80px; opacity: 0;
+  }
+  @keyframes dataFlow {
+    0% { top: -80px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.6; }
+    100% { top: 110%; opacity: 0; }
+  }
+
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(46,204,138,0.08); border: 1px solid rgba(46,204,138,0.2);
+    border-radius: 100px; padding: 6px 16px;
+    font-size: 12px; font-weight: 500; color: var(--mint); margin-bottom: 28px;
+  }
+  .hero-eyebrow .dot { width: 6px; height: 6px; background: var(--mint); border-radius: 50%; box-shadow: 0 0 8px var(--mint); animation: pulse 1.5s infinite; }
+  .hero-h1 { font-family: var(--font-display); font-size: 64px; font-weight: 800; line-height: 1.04; letter-spacing: -1.5px; margin-bottom: 28px; color: #fff; }
+  .hero-h1 em { font-style: normal; color: var(--saffron); text-shadow: 0 0 40px rgba(255,107,53,0.4); }
+  .hero-sub { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 440px; margin-bottom: 40px; font-weight: 400; }
+  .hero-cta-row { display: flex; flex-direction: column; gap: 24px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--saffron); color: #fff; padding: 16px 32px; border-radius: 100px;
+    font-size: 16px; font-weight: 700; text-decoration: none; width: fit-content;
+    box-shadow: 0 0 40px rgba(255,107,53,0.35), 0 0 80px rgba(255,107,53,0.15);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 56px rgba(255,107,53,0.5), 0 0 100px rgba(255,107,53,0.2); }
+  .hero-trust-row { display: flex; gap: 28px; align-items: center; }
+  .hero-trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500; }
+  .hero-trust-item .check { color: var(--mint); font-size: 14px; }
+
+  /* HERO RIGHT */
+  .hero-right { display: flex; flex-direction: column; gap: 12px; position: relative; }
+
+  /* AI scan sweep */
+  .ai-scan-wrap { position: relative; overflow: hidden; }
+  .ai-scan-wrap::after {
+    content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, rgba(255,107,53,0.08) 49%, rgba(255,107,53,0.12) 50%, transparent 100%);
+    background-size: 100% 200%;
+    animation: aiScan 3s ease-in-out infinite;
+  }
+  @keyframes aiScan {
+    0% { background-position: 0% -100%; }
+    50% { background-position: 0% 100%; }
+    100% { background-position: 0% 300%; }
+  }
+
+  /* Corner brackets */
+  .bracket-wrap { position: relative; }
+  .bracket-wrap::before, .bracket-wrap::after {
+    content: ''; position: absolute; width: 14px; height: 14px; z-index: 3;
+  }
+  .bracket-wrap::before { top: 8px; left: 8px; border-top: 1.5px solid var(--saffron); border-left: 1.5px solid var(--saffron); }
+  .bracket-wrap::after { bottom: 8px; right: 8px; border-bottom: 1.5px solid var(--saffron); border-right: 1.5px solid var(--saffron); }
+
+  .glass-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 22px; position: relative; overflow: hidden; }
+  .glass-card-saffron {
+    background: linear-gradient(135deg, rgba(255,107,53,0.07), rgba(255,107,53,0.02));
+    border: 1px solid rgba(255,107,53,0.2); border-radius: 20px; padding: 22px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 0 40px rgba(255,107,53,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* Hexagon grid background on main card */
+  .glass-card-saffron::before {
+    content: ''; position: absolute; inset: 0; opacity: 0.06; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='30' height='26' viewBox='0 0 30 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 0 L30 8.66 L30 17.32 L15 26 L0 17.32 L0 8.66 Z' fill='none' stroke='%23FF6B35' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-size: 30px 26px;
+  }
+
+  /* Scanning line inside card */
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 1px; z-index: 2; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.6), transparent);
+    animation: scanLine 2.5s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(255,107,53,0.4);
+  }
+  @keyframes scanLine {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.8; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Pulsing dots decoration */
+  .node-dot {
+    position: absolute; border-radius: 50%;
+    animation: nodePulse 2s ease-in-out infinite;
+  }
+  @keyframes nodePulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 12px currentColor; }
+  }
+
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .mono-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+  .live-badge { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px; color: var(--mint); font-weight: 500; }
+  .live-dot { width: 6px; height: 6px; background: var(--mint); border-radius: 50%; box-shadow: 0 0 6px var(--mint); animation: pulse 1s infinite; }
+  .project-name { font-size: 17px; font-weight: 700; margin-bottom: 4px; color: #fff; letter-spacing: -0.3px; }
+  .project-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+  .match-score-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .price-big { font-size: 26px; font-weight: 800; color: #fff; font-family: var(--font-display); letter-spacing: -0.5px; }
+  .best-offer-tag { font-size: 11px; font-weight: 700; color: var(--mint); background: var(--mint-glow); border: 1px solid rgba(46,204,138,0.25); padding: 4px 12px; border-radius: 100px; }
+  .match-bar-row { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .ring-wrap { position: relative; width: 44px; height: 44px; flex-shrink: 0; }
+  .ring-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--saffron); font-family: var(--font-mono); }
+  .match-desc { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+  .match-desc strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+  /* Typing animation for AI processing text */
+  .ai-processing {
+    font-family: var(--font-mono); font-size: 10px; color: var(--mint);
+    overflow: hidden; white-space: nowrap;
+    animation: typing 3s steps(30) infinite;
+    border-right: 1px solid var(--mint);
+    width: 0; max-width: 100%;
+  }
+  @keyframes typing {
+    0%, 5% { width: 0; }
+    40%, 60% { width: 100%; }
+    95%, 100% { width: 0; }
+  }
+
+  /* Data badge row */
+  .data-badge-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .data-badge {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.5px;
+    padding: 3px 8px; border-radius: 6px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+    animation: badgeFlicker 4s ease-in-out infinite;
+  }
+  .data-badge.active { color: var(--mint); border-color: rgba(46,204,138,0.2); background: var(--mint-glow); }
+  @keyframes badgeFlicker {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  .mini-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; transition: transform .2s, border-color .2s, box-shadow .2s; }
+  .mini-card:hover { transform: translateX(-4px); border-color: rgba(255,107,53,0.25); box-shadow: 0 0 20px rgba(255,107,53,0.06); }
+  .mini-name { font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+  .mini-sub { font-size: 11px; color: var(--muted); }
+  .mini-price { font-size: 13px; font-weight: 700; color: var(--white); text-align: right; }
+  .rera-tick { font-size: 10px; color: var(--mint); margin-top: 2px; }
+
+  .savings-banner { background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(240,165,0,0.05)); border: 1px solid rgba(255,107,53,0.18); border-radius: 14px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .savings-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .savings-num { font-size: 28px; font-weight: 800; color: var(--saffron); }
+  .zero-brok { font-size: 10px; font-weight: 700; color: var(--mint); background: var(--mint-glow); border: 1px solid rgba(46,204,138,0.25); padding: 8px 14px; border-radius: 12px; text-align: center; line-height: 1.4; }
+
+  /* ── ACTIVITY TICKER ── */
+  .activity-ticker-wrap { background: var(--surface); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); padding: 14px 0; overflow: hidden; position: relative; }
+  .activity-ticker-wrap::before, .activity-ticker-wrap::after { content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none; }
+  .activity-ticker-wrap::before { left: 0; background: linear-gradient(90deg, var(--surface), transparent); }
+  .activity-ticker-wrap::after { right: 0; background: linear-gradient(-90deg, var(--surface), transparent); }
+  .ticker-inner { display: flex; gap: 48px; white-space: nowrap; animation: ticker 22s linear infinite; }
+  .ticker-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 400; }
+  .ticker-item .avatar { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+  .ticker-item strong { color: var(--white); }
+  .ticker-item .ago { color: var(--dim); font-size: 11px; }
+
+  /* ── DEV LOGOS ── */
+  .dev-logos-section { padding: 60px 48px; max-width: 1200px; margin: 0 auto; }
+  .dev-logos-label { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 24px; }
+  .dev-logos-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .dev-pill { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 100px; padding: 8px 20px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 8px; transition: border-color .2s, color .2s, box-shadow .2s; }
+  .dev-pill:hover { border-color: rgba(255,107,53,0.3); color: var(--white); box-shadow: 0 0 16px rgba(255,107,53,0.08); }
+  .dev-pill .rera-dot { width: 5px; height: 5px; background: var(--mint); border-radius: 50%; }
+
+  /* ── SECTION HELPERS ── */
+  section { padding: 120px 48px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--saffron); margin-bottom: 16px; opacity: 0.9; }
+  .section-h2 { font-family: var(--font-display); font-size: 46px; font-weight: 800; line-height: 1.06; margin-bottom: 14px; letter-spacing: -0.5px; color: #fff; }
+  .section-h2 em { font-style: normal; color: var(--saffron); }
+  .section-sub { font-size: 16px; color: rgba(255,255,255,0.6); max-width: 520px; line-height: 1.65; }
+  .section-head-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; }
+  .section-head-row .view-all { font-size: 13px; color: var(--muted); text-decoration: none; padding: 8px 20px; border: 1px solid var(--glass-border); border-radius: 100px; transition: all .2s; }
+  .section-head-row .view-all:hover { border-color: rgba(255,107,53,0.3); color: var(--saffron); }
+
+  /* ── HOW IT WORKS ── */
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 56px; position: relative; }
+  .how-connector { position: absolute; top: 32px; left: calc(33.3% + 20px); right: calc(33.3% + 20px); height: 1px; background: linear-gradient(90deg, var(--saffron), rgba(255,107,53,0.1)); }
+  .how-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 24px; padding: 32px 28px; display: flex; flex-direction: column; gap: 16px; transition: border-color .3s, transform .3s, box-shadow .3s; position: relative; overflow: hidden; }
+  .how-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20% 80%, rgba(255,107,53,0.04) 0%, transparent 60%); opacity: 0; transition: opacity .3s; }
+  .how-card:hover::before { opacity: 1; }
+  .how-card:hover { border-color: rgba(255,107,53,0.2); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .how-step-num { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--saffron); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; color: var(--saffron); position: relative; }
+  .how-step-num::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1px dashed rgba(255,107,53,0.2); }
+  .how-icon { font-size: 28px; }
+  .how-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+  .how-desc { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+  .how-tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--mint); background: var(--mint-glow); border: 1px solid rgba(46,204,138,0.2); border-radius: 100px; padding: 4px 12px; width: fit-content; }
+
+  /* ── FEATURED PROJECTS ── */
+  .filter-tabs { display: flex; gap: 8px; margin-bottom: 36px; flex-wrap: wrap; }
+  .filter-tab { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 100px; padding: 8px 18px; font-size: 13px; color: var(--muted); cursor: pointer; transition: all .2s; }
+  .filter-tab.active { background: var(--saffron-glow); border-color: rgba(255,107,53,0.35); color: var(--saffron); font-weight: 600; }
+  .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .project-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px; text-decoration: none; transition: transform .25s, border-color .25s, box-shadow .25s; position: relative; overflow: hidden; }
+  .project-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 100% 0%, rgba(255,107,53,0.06) 0%, transparent 50%); opacity: 0; transition: opacity .3s; }
+  .project-card:hover::before { opacity: 1; }
+  .project-card:hover { transform: translateY(-4px); border-color: rgba(255,107,53,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,107,53,0.08); }
+  .project-card.featured::after { content: 'TOP MATCH'; position: absolute; top: 16px; right: 16px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; color: var(--saffron); background: var(--saffron-glow); border: 1px solid rgba(255,107,53,0.25); border-radius: 100px; padding: 3px 10px; }
+  .pc-head { display: flex; justify-content: space-between; align-items: flex-start; }
+  .pc-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: #fff; letter-spacing: -0.2px; }
+  .pc-dev { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .bhk-tag { font-size: 10px; font-weight: 600; color: var(--mint); background: var(--mint-glow); border: 1px solid rgba(46,204,138,0.2); border-radius: 100px; padding: 4px 10px; white-space: nowrap; }
+  .pc-price { font-size: 22px; font-weight: 800; color: var(--saffron); }
+  .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+  .pc-stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.3); margin-bottom: 3px; font-family: var(--font-mono); }
+  .pc-stat-val { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); }
+  .demand-bar-wrap { margin-top: 4px; }
+  .demand-bar-bg { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .demand-bar-fill { height: 100%; background: linear-gradient(90deg, var(--saffron), #FFB347); border-radius: 2px; }
+  .demand-pct { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 5px; font-weight: 500; }
+  .pc-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--glass-border); }
+  .pc-cta { font-size: 12px; font-weight: 600; color: var(--muted); transition: color .2s; }
+  .project-card:hover .pc-cta { color: var(--saffron); }
+  .rera-badge { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── SAVINGS CALCULATOR ── */
+  .savings-wrap { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 32px; padding: 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; position: relative; overflow: hidden; }
+  .savings-wrap::before { content: ''; position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%); top: -100px; right: -50px; pointer-events: none; }
+  .savings-left h2 { font-family: var(--font-display); font-size: 42px; font-weight: 800; line-height: 1.06; margin-bottom: 16px; letter-spacing: -0.5px; color: #fff; }
+  .savings-left h2 em { font-style: normal; color: var(--saffron); }
+  .savings-left p { font-size: 15px; color: rgba(255,255,255,0.6); margin-bottom: 32px; line-height: 1.65; }
+  .slider-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .slider-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
+  .slider-label strong { color: var(--white); }
+  input[type=range] { width: 100%; -webkit-appearance: none; height: 3px; background: linear-gradient(90deg, var(--saffron) 60%, var(--glass-border) 60%); border-radius: 2px; outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--saffron); border-radius: 50%; box-shadow: 0 0 0 4px var(--saffron-glow); cursor: pointer; }
+  .savings-result { background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(46,204,138,0.04)); border: 1px solid rgba(255,107,53,0.2); border-radius: 24px; padding: 40px; text-align: center; }
+  .savings-result-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+  .savings-result-num { font-family: var(--font-display); font-size: 64px; font-weight: 800; color: var(--saffron); line-height: 1; margin-bottom: 8px; text-shadow: 0 0 40px rgba(255,107,53,0.3); letter-spacing: -2px; }
+  .savings-result-sub { font-size: 14px; color: var(--muted); }
+  .vs-row { display: flex; gap: 12px; margin-top: 24px; }
+  .vs-item { flex: 1; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 16px; text-align: center; }
+  .vs-item-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .vs-item-val { font-size: 16px; font-weight: 700; }
+  .vs-item-val.bad { color: rgba(255,80,80,0.8); text-decoration: line-through; }
+  .vs-item-val.good { color: var(--mint); }
+
+  /* ── COMPARISON TABLE ── */
+  .comp-table { width: 100%; border-collapse: collapse; margin-top: 48px; }
+  .comp-table th { padding: 16px 24px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--glass-border); }
+  .comp-table th:first-child { color: var(--muted); font-weight: 400; }
+  .comp-table th.highlight { background: var(--saffron-glow); border: 1px solid rgba(255,107,53,0.2); border-bottom: none; border-radius: 16px 16px 0 0; color: var(--saffron); font-weight: 700; }
+  .comp-table td { padding: 14px 24px; font-size: 14px; border-bottom: 1px solid var(--glass-border); color: var(--muted); }
+  .comp-table td:first-child { font-weight: 500; color: rgba(255,255,255,0.75); }
+  .comp-table td.highlight { background: rgba(255,107,53,0.04); border-left: 1px solid rgba(255,107,53,0.15); border-right: 1px solid rgba(255,107,53,0.15); }
+  .comp-table tr:last-child td.highlight { border-radius: 0 0 16px 16px; border-bottom: 1px solid rgba(255,107,53,0.2); }
+  .check-yes { color: var(--mint); font-size: 16px; }
+  .check-no { color: rgba(255,80,80,0.7); font-size: 16px; }
+  .check-partial { color: rgba(255,200,50,0.8); font-size: 16px; }
+
+  /* ── TESTIMONIALS ── */
+  .test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+  .test-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px; transition: border-color .2s, transform .2s; position: relative; overflow: hidden; }
+  .test-card::before { content: '"'; position: absolute; top: 20px; right: 24px; font-size: 80px; line-height: 1; color: rgba(255,107,53,0.08); font-family: Georgia, serif; }
+  .test-card:hover { border-color: rgba(255,107,53,0.2); transform: translateY(-3px); }
+  .test-saving { display: inline-flex; align-items: center; gap: 6px; background: var(--mint-glow); border: 1px solid rgba(46,204,138,0.2); border-radius: 100px; padding: 5px 14px; font-size: 12px; font-weight: 700; color: var(--mint); width: fit-content; }
+  .test-quote { font-size: 14px; color: rgba(255,255,255,0.72); line-height: 1.75; flex: 1; font-weight: 400; }
+  .test-footer { display: flex; align-items: center; gap: 12px; padding-top: 16px; border-top: 1px solid var(--glass-border); }
+  .test-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .test-name { font-size: 13px; font-weight: 700; color: #fff; }
+  .test-project { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 1px; }
+  .test-verified { font-size: 10px; color: var(--mint); margin-top: 2px; font-weight: 500; }
+
+  /* ── FOOTER CTA ── */
+  .footer-cta-wrap { background: linear-gradient(135deg, rgba(255,107,53,0.1) 0%, rgba(7,7,15,0) 50%, rgba(46,204,138,0.06) 100%); border: 1px solid var(--glass-border); border-radius: 32px; padding: 80px 64px; text-align: center; position: relative; overflow: hidden; margin: 0 48px 120px; }
+  .footer-cta-wrap::before { content: ''; position: absolute; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%); top: -200px; left: 50%; transform: translateX(-50%); pointer-events: none; }
+  /* Grid in footer */
+  .footer-cta-wrap::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%); }
+  .footer-live-stat { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 100px; padding: 8px 20px; font-size: 13px; color: var(--muted); margin-bottom: 28px; position: relative; }
+  .footer-live-stat strong { color: var(--white); }
+  .footer-h2 { font-family: var(--font-display); font-size: 56px; font-weight: 800; line-height: 1.04; margin-bottom: 16px; position: relative; letter-spacing: -1px; color: #fff; }
+  .footer-h2 em { font-style: normal; color: var(--saffron); }
+  .footer-sub { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 40px; position: relative; line-height: 1.6; }
+  .footer-btn-row { display: flex; gap: 16px; justify-content: center; position: relative; }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: var(--glass); border: 1px solid var(--glass-border); color: rgba(255,255,255,0.7); padding: 16px 32px; border-radius: 100px; font-size: 15px; font-weight: 500; text-decoration: none; transition: border-color .2s, color .2s; }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
+
+  /* ── FOOTER BAR ── */
+  footer { border-top: 1px solid var(--glass-border); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 13px; position: relative; }
+  footer a { color: var(--muted); text-decoration: none; margin-left: 24px; }
+  footer a:hover { color: var(--white); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(0.8); } }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+<div class="glow-orb glow-orb-3"></div>
+<div class="grid-overlay"></div>
+
+<div class="page-content">
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Ghar<span>Dhundo</span></div>
+  <div class="nav-links">
+    <a href="#">Projects</a>
+    <a href="#">How it works</a>
+    <a href="#">Savings</a>
+    <a href="#">Reviews</a>
+    <a class="nav-cta" href="#">Get Best Offer</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-wrap">
+  <!-- Floating particles -->
+  <div class="particles">
+    <div class="particle" style="left:15%;top:70%;--dur:7s;--delay:0s;--dx:30px"></div>
+    <div class="particle" style="left:25%;top:80%;--dur:9s;--delay:1s;--dx:-20px"></div>
+    <div class="particle mint" style="left:60%;top:75%;--dur:8s;--delay:2s;--dx:15px"></div>
+    <div class="particle" style="left:70%;top:60%;--dur:11s;--delay:0.5s;--dx:-30px"></div>
+    <div class="particle mint" style="left:80%;top:85%;--dur:6s;--delay:3s;--dx:20px"></div>
+    <div class="particle" style="left:40%;top:90%;--dur:10s;--delay:1.5s;--dx:25px"></div>
+    <div class="particle mint" style="left:55%;top:65%;--dur:8s;--delay:4s;--dx:-15px"></div>
+    <div class="particle" style="left:88%;top:78%;--dur:12s;--delay:2.5s;--dx:-25px"></div>
+  </div>
+
+  <!-- Data flow lines (right half only) -->
+  <div class="data-lines">
+    <div class="data-line" style="left:8%;--speed:4s;--delay:0s"></div>
+    <div class="data-line" style="left:22%;--speed:5s;--delay:1.2s"></div>
+    <div class="data-line" style="left:38%;--speed:3.5s;--delay:0.6s"></div>
+    <div class="data-line" style="left:55%;--speed:6s;--delay:2s"></div>
+    <div class="data-line" style="left:72%;--speed:4.5s;--delay:0.3s"></div>
+    <div class="data-line" style="left:88%;--speed:3s;--delay:1.8s"></div>
+  </div>
+
+  <div class="hero-grid">
+    <!-- LEFT -->
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        AI-powered home buying · Zero brokerage
+      </div>
+      <h1 class="hero-h1">
+        Find your home.<br>
+        Get the <em>best offer.</em><br>
+        Pay nothing.
+      </h1>
+      <p class="hero-sub">
+        Tell us what you want. Our AI matches you to RERA-verified projects across Pune. Our advisors negotiate the best price — on your behalf.
+      </p>
+      <div class="hero-cta-row">
+        <a href="#" class="btn-primary">
+          Find My Perfect Home <span style="font-size:18px">→</span>
+        </a>
+        <div class="hero-trust-row">
+          <div class="hero-trust-item"><span class="check">✓</span> 200+ RERA projects</div>
+          <div class="hero-trust-item"><span class="check">✓</span> ₹12L max saving</div>
+          <div class="hero-trust-item"><span class="check">✓</span> Zero brokerage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: AI match card with scan effect -->
+    <div class="hero-right">
+      <div class="bracket-wrap ai-scan-wrap glass-card-saffron">
+        <!-- scan line -->
+        <div class="scan-line"></div>
+        <!-- node dots -->
+        <div class="node-dot" style="width:4px;height:4px;top:20px;right:60px;background:var(--saffron);color:var(--saffron);animation-delay:.3s"></div>
+        <div class="node-dot" style="width:3px;height:3px;bottom:30px;left:80px;background:var(--mint);color:var(--mint);animation-delay:1s"></div>
+
+        <div class="card-header">
+          <span class="mono-label">// AI_MATCH_RESULT</span>
+          <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+        </div>
+
+        <!-- AI typing simulation -->
+        <div class="ai-processing" style="margin-bottom:10px">analyzing_242_rera_projects...</div>
+
+        <!-- Data badges -->
+        <div class="data-badge-row">
+          <span class="data-badge active">BUDGET_OK</span>
+          <span class="data-badge active">LOCATION_MATCH</span>
+          <span class="data-badge">RERA_VERIFIED</span>
+          <span class="data-badge active">BHK_2/3</span>
+        </div>
+
+        <div class="project-name">Godrej Meridian Park</div>
+        <div class="project-sub">Baner · 2BHK / 3BHK</div>
+        <div class="match-score-row">
+          <div class="price-big">₹78L – ₹1.1Cr</div>
+          <div class="best-offer-tag">Best Offer</div>
+        </div>
+        <div class="match-bar-row">
+          <div class="ring-wrap">
+            <svg width="44" height="44" viewBox="0 0 44 44" style="transform:rotate(-90deg)">
+              <circle cx="22" cy="22" r="17" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="3"/>
+              <circle cx="22" cy="22" r="17" fill="none" stroke="#FF6B35" stroke-width="3"
+                stroke-dasharray="106.8" stroke-dashoffset="10.68" stroke-linecap="round"
+                style="filter:drop-shadow(0 0 4px rgba(255,107,53,0.6));animation:none"/>
+            </svg>
+            <div class="ring-label">95%</div>
+          </div>
+          <div class="match-desc">
+            <strong>95% match score</strong><br>
+            Based on your budget, location &amp; BHK
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini project cards -->
+      <a class="mini-card" href="#">
+        <div><div class="mini-name">Majestique Marbella</div><div class="mini-sub">Kharadi</div></div>
+        <div><div class="mini-price">₹95L – ₹1.2Cr</div><div class="rera-tick">MahaRERA ✓</div></div>
+      </a>
+      <a class="mini-card" href="#">
+        <div><div class="mini-name">Kumar Primus</div><div class="mini-sub">Wakad</div></div>
+        <div><div class="mini-price">₹55L – ₹72L</div><div class="rera-tick">MahaRERA ✓</div></div>
+      </a>
+
+      <!-- Savings banner -->
+      <div class="savings-banner">
+        <div><div class="savings-label">Best savings achieved</div><div class="savings-num">₹12L / buyer</div></div>
+        <div class="zero-brok">Zero<br>brokerage</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVITY TICKER -->
+<div class="activity-ticker-wrap">
+  <div class="ticker-inner">
+    <div class="ticker-item"><div class="avatar" style="background:rgba(255,107,53,0.15);color:#FF6B35">R</div><span><strong>Rahul S.</strong> matched with a project in Baner</span><span class="ago">2m ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(46,204,138,0.12);color:#2ECC8A">P</div><span><strong>Priya M.</strong> saved <strong>₹8.5L</strong> on her 3BHK in Kharadi</span><span class="ago">11m ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(255,107,53,0.1);color:#FF6B35">A</div><span><strong>Ankit V.</strong> booked a 2BHK in Wakad</span><span class="ago">34m ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(255,200,50,0.1);color:#FFC832">S</div><span><strong>Sneha K.</strong> got advisor match in Hinjewadi</span><span class="ago">1h ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(46,204,138,0.12);color:#2ECC8A">M</div><span><strong>Mehul J.</strong> shortlisted 3 projects in East Pune</span><span class="ago">2h ago</span></div>
+    <!-- duplicate -->
+    <div class="ticker-item"><div class="avatar" style="background:rgba(255,107,53,0.15);color:#FF6B35">R</div><span><strong>Rahul S.</strong> matched with a project in Baner</span><span class="ago">2m ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(46,204,138,0.12);color:#2ECC8A">P</div><span><strong>Priya M.</strong> saved <strong>₹8.5L</strong> on her 3BHK in Kharadi</span><span class="ago">11m ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(255,107,53,0.1);color:#FF6B35">A</div><span><strong>Ankit V.</strong> booked a 2BHK in Wakad</span><span class="ago">34m ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(255,200,50,0.1);color:#FFC832">S</div><span><strong>Sneha K.</strong> got advisor match in Hinjewadi</span><span class="ago">1h ago</span></div>
+    <div class="ticker-item"><div class="avatar" style="background:rgba(46,204,138,0.12);color:#2ECC8A">M</div><span><strong>Mehul J.</strong> shortlisted 3 projects in East Pune</span><span class="ago">2h ago</span></div>
+  </div>
+</div>
+
+<!-- DEVELOPER PILLS -->
+<div class="dev-logos-section">
+  <p class="dev-logos-label">Projects from Pune's top RERA-verified developers</p>
+  <div class="dev-logos-row">
+    <div class="dev-pill"><span class="rera-dot"></span>Godrej Properties</div>
+    <div class="dev-pill"><span class="rera-dot"></span>Majestique Landmarks</div>
+    <div class="dev-pill"><span class="rera-dot"></span>Kumar Properties</div>
+    <div class="dev-pill"><span class="rera-dot"></span>Kolte-Patil</div>
+    <div class="dev-pill"><span class="rera-dot"></span>Rohan Builders</div>
+    <div class="dev-pill"><span class="rera-dot"></span>Pride Purple</div>
+    <div class="dev-pill"><span class="rera-dot"></span>Nyati Group</div>
+    <div class="dev-pill"><span class="rera-dot"></span>Gera Developments</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="section-label">// HOW_IT_WORKS</div>
+  <h2 class="section-h2">Three steps to your <em>best offer</em></h2>
+  <p class="section-sub">No brokerage. No cold calls. AI does the matching, advisors do the negotiating.</p>
+  <div class="how-grid">
+    <div class="how-connector"></div>
+    <div class="how-card">
+      <div class="how-step-num">01</div>
+      <div class="how-icon">🤖</div>
+      <div class="how-title">AI matches you</div>
+      <div class="how-desc">Tell us your budget, location, and BHK type. Our AI cross-references 200+ live RERA projects and surfaces your top matches in seconds.</div>
+      <div class="how-tag">Takes 2 minutes</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step-num">02</div>
+      <div class="how-icon">📋</div>
+      <div class="how-title">Review your shortlist</div>
+      <div class="how-desc">See possession dates, carpet area, sales velocity, and builder score for each match. Real MahaRERA data — not brochure numbers.</div>
+      <div class="how-tag">Data from MahaRERA</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step-num">03</div>
+      <div class="how-icon">💎</div>
+      <div class="how-title">Get best offer</div>
+      <div class="how-desc">Our advisors negotiate directly with the developer on your behalf. You get the best available price — with zero brokerage, ever.</div>
+      <div class="how-tag">₹12L max saving</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PROJECTS -->
+<section style="padding-top:0">
+  <div class="section-head-row">
+    <div>
+      <div class="section-label">// FEATURED_PROJECTS</div>
+      <h2 class="section-h2">Live RERA projects <em>near you</em></h2>
+      <p class="section-sub">AI-matched to a typical Pune buyer profile. Sign in to see your personal matches.</p>
+    </div>
+    <a href="#" class="view-all">View all projects →</a>
+  </div>
+  <div class="filter-tabs">
+    <div class="filter-tab active">All areas</div>
+    <div class="filter-tab">Baner / Balewadi</div>
+    <div class="filter-tab">Kharadi / Viman</div>
+    <div class="filter-tab">Wakad / Hinjewadi</div>
+    <div class="filter-tab">Hadapsar / Kondhwa</div>
+    <div class="filter-tab">Undri / Pisoli</div>
+  </div>
+  <div class="projects-grid">
+    <a class="project-card featured" href="#">
+      <div class="pc-head"><div><div class="pc-name">Godrej Meridian Park</div><div class="pc-dev">Godrej Properties · Baner</div></div><div class="bhk-tag">2 / 3 BHK</div></div>
+      <div class="pc-price">₹78L – ₹1.1Cr</div>
+      <div class="pc-grid">
+        <div><div class="pc-stat-label">Possession</div><div class="pc-stat-val">Dec 2026</div></div>
+        <div><div class="pc-stat-label">Carpet Area</div><div class="pc-stat-val">680–940 sqft</div></div>
+        <div><div class="pc-stat-label">Units Sold</div><div class="pc-stat-val">312 / 420</div></div>
+        <div><div class="pc-stat-label">Available</div><div class="pc-stat-val">108 units</div></div>
+      </div>
+      <div class="demand-bar-wrap"><div class="pc-stat-label">Demand</div><div class="demand-bar-bg"><div class="demand-bar-fill" style="width:74%"></div></div><div class="demand-pct">74% booked — moving fast</div></div>
+      <div class="pc-footer"><span class="pc-cta">Get Best Offer →</span><span class="rera-badge">MahaRERA ✓</span></div>
+    </a>
+    <a class="project-card" href="#">
+      <div class="pc-head"><div><div class="pc-name">Majestique Marbella</div><div class="pc-dev">Majestique Landmarks · Kharadi</div></div><div class="bhk-tag">3 BHK</div></div>
+      <div class="pc-price">₹95L – ₹1.2Cr</div>
+      <div class="pc-grid">
+        <div><div class="pc-stat-label">Possession</div><div class="pc-stat-val">Mar 2027</div></div>
+        <div><div class="pc-stat-label">Carpet Area</div><div class="pc-stat-val">920–1,100 sqft</div></div>
+        <div><div class="pc-stat-label">Units Sold</div><div class="pc-stat-val">188 / 280</div></div>
+        <div><div class="pc-stat-label">Available</div><div class="pc-stat-val">92 units</div></div>
+      </div>
+      <div class="demand-bar-wrap"><div class="pc-stat-label">Demand</div><div class="demand-bar-bg"><div class="demand-bar-fill" style="width:67%"></div></div><div class="demand-pct">67% booked</div></div>
+      <div class="pc-footer"><span class="pc-cta">Get Best Offer →</span><span class="rera-badge">MahaRERA ✓</span></div>
+    </a>
+    <a class="project-card" href="#">
+      <div class="pc-head"><div><div class="pc-name">Kumar Primus</div><div class="pc-dev">Kumar Properties · Wakad</div></div><div class="bhk-tag">2 BHK</div></div>
+      <div class="pc-price">₹55L – ₹72L</div>
+      <div class="pc-grid">
+        <div><div class="pc-stat-label">Possession</div><div class="pc-stat-val">Ready</div></div>
+        <div><div class="pc-stat-label">Carpet Area</div><div class="pc-stat-val">580–680 sqft</div></div>
+        <div><div class="pc-stat-label">Units Sold</div><div class="pc-stat-val">98 / 120</div></div>
+        <div><div class="pc-stat-label">Available</div><div class="pc-stat-val">22 units</div></div>
+      </div>
+      <div class="demand-bar-wrap"><div class="pc-stat-label">Demand</div><div class="demand-bar-bg"><div class="demand-bar-fill" style="width:82%"></div></div><div class="demand-pct">82% booked — very few left</div></div>
+      <div class="pc-footer"><span class="pc-cta">Get Best Offer →</span><span class="rera-badge">MahaRERA ✓</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- PUNE MAP -->
+<section style="padding-top:0">
+  <div class="section-head-row" style="margin-bottom:40px">
+    <div>
+      <div class="section-label">// PUNE_COVERAGE</div>
+      <h2 class="section-h2">Projects across <em>all of Pune</em></h2>
+      <p class="section-sub">Every major micro-market covered. Click any zone to filter projects.</p>
+    </div>
+  </div>
+  <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1fr 340px;min-height:480px;">
+    <!-- MAP PANEL -->
+    <div style="position:relative;padding:32px;background:linear-gradient(135deg,rgba(255,107,53,0.03),rgba(46,204,138,0.02));">
+      <!-- Grid lines inside map -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:40px 40px;border-radius:24px 0 0 24px;pointer-events:none;"></div>
+      <svg viewBox="0 0 560 420" style="width:100%;height:100%;min-height:380px;" xmlns="http://www.w3.org/2000/svg">
+        <!-- Pune city boundary — simplified polygon -->
+        <polygon points="120,60 200,30 300,20 400,40 460,100 480,180 460,280 400,360 300,390 200,380 120,320 80,220 80,140"
+          fill="rgba(255,107,53,0.04)" stroke="rgba(255,107,53,0.15)" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+        <!-- River lines (Mula-Mutha approximate) -->
+        <path d="M80,200 Q160,190 240,210 Q320,230 400,200 Q440,185 480,190"
+          fill="none" stroke="rgba(46,204,138,0.2)" stroke-width="2"/>
+        <path d="M100,230 Q180,240 260,220 Q320,210 360,230"
+          fill="none" stroke="rgba(46,204,138,0.15)" stroke-width="1.5"/>
+
+        <!-- Zone: Hinjewadi (NW) -->
+        <circle cx="110" cy="130" r="28" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.25)" stroke-width="1"/>
+        <circle cx="110" cy="130" r="8" fill="rgba(255,107,53,0.4)"/>
+        <circle cx="110" cy="130" r="14" fill="none" stroke="rgba(255,107,53,0.3)" stroke-width="1" style="animation:pulse 2s infinite"/>
+        <text x="110" y="172" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="var(--font-body,sans-serif)" font-weight="600">Hinjewadi</text>
+        <text x="110" y="184" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="var(--font-mono,monospace)">14 projects</text>
+
+        <!-- Zone: Wakad (W) -->
+        <circle cx="165" cy="160" r="22" fill="rgba(255,107,53,0.06)" stroke="rgba(255,107,53,0.2)" stroke-width="1"/>
+        <circle cx="165" cy="160" r="7" fill="rgba(255,107,53,0.35)"/>
+        <text x="165" y="196" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="var(--font-body,sans-serif)" font-weight="600">Wakad</text>
+        <text x="165" y="208" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="var(--font-mono,monospace)">9 projects</text>
+
+        <!-- Zone: Baner/Balewadi (W) -->
+        <circle cx="200" cy="200" r="26" fill="rgba(255,107,53,0.09)" stroke="rgba(255,107,53,0.3)" stroke-width="1.5"/>
+        <circle cx="200" cy="200" r="9" fill="rgba(255,107,53,0.5)"/>
+        <circle cx="200" cy="200" r="17" fill="none" stroke="rgba(255,107,53,0.2)" stroke-width="1" style="animation:pulse 2.5s infinite"/>
+        <text x="200" y="240" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="10" font-family="var(--font-body,sans-serif)" font-weight="700">Baner</text>
+        <text x="200" y="252" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="var(--font-mono,monospace)">18 projects</text>
+
+        <!-- Zone: Aundh/Kothrud (SW) -->
+        <circle cx="205" cy="260" r="20" fill="rgba(255,107,53,0.05)" stroke="rgba(255,107,53,0.18)" stroke-width="1"/>
+        <circle cx="205" cy="260" r="6" fill="rgba(255,107,53,0.3)"/>
+        <text x="205" y="293" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-size="10" font-family="var(--font-body,sans-serif)" font-weight="600">Kothrud</text>
+        <text x="205" y="305" text-anchor="middle" fill="rgba(255,107,53,0.7)" font-size="9" font-family="var(--font-mono,monospace)">7 projects</text>
+
+        <!-- Zone: Pimple Saudagar (N) -->
+        <circle cx="240" cy="100" r="18" fill="rgba(46,204,138,0.06)" stroke="rgba(46,204,138,0.22)" stroke-width="1"/>
+        <circle cx="240" cy="100" r="6" fill="rgba(46,204,138,0.4)"/>
+        <text x="240" y="130" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-size="9" font-family="var(--font-body,sans-serif)" font-weight="600">Pimple S.</text>
+        <text x="240" y="142" text-anchor="middle" fill="#2ECC8A" font-size="9" font-family="var(--font-mono,monospace)">6 projects</text>
+
+        <!-- Zone: Moshi (N) -->
+        <circle cx="310" cy="65" r="16" fill="rgba(46,204,138,0.05)" stroke="rgba(46,204,138,0.18)" stroke-width="1"/>
+        <circle cx="310" cy="65" r="5" fill="rgba(46,204,138,0.35)"/>
+        <text x="310" y="92" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="var(--font-body,sans-serif)" font-weight="600">Moshi</text>
+        <text x="310" y="104" text-anchor="middle" fill="#2ECC8A" font-size="9" font-family="var(--font-mono,monospace)">5 projects</text>
+
+        <!-- Zone: Viman Nagar (NE) -->
+        <circle cx="380" cy="140" r="22" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.22)" stroke-width="1"/>
+        <circle cx="380" cy="140" r="7" fill="rgba(255,107,53,0.4)"/>
+        <text x="380" y="175" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="10" font-family="var(--font-body,sans-serif)" font-weight="600">Viman Nagar</text>
+        <text x="380" y="187" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="var(--font-mono,monospace)">11 projects</text>
+
+        <!-- Zone: Kharadi (E) — largest bubble -->
+        <circle cx="430" cy="200" r="32" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+        <circle cx="430" cy="200" r="11" fill="rgba(255,107,53,0.55)"/>
+        <circle cx="430" cy="200" r="21" fill="none" stroke="rgba(255,107,53,0.2)" stroke-width="1" style="animation:pulse 2s 0.5s infinite"/>
+        <text x="430" y="247" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="11" font-family="var(--font-body,sans-serif)" font-weight="700">Kharadi</text>
+        <text x="430" y="260" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="var(--font-mono,monospace)">22 projects</text>
+
+        <!-- Zone: Magarpatta/Hadapsar (SE) -->
+        <circle cx="390" cy="290" r="24" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.22)" stroke-width="1"/>
+        <circle cx="390" cy="290" r="8" fill="rgba(255,107,53,0.38)"/>
+        <text x="390" y="328" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="10" font-family="var(--font-body,sans-serif)" font-weight="600">Hadapsar</text>
+        <text x="390" y="340" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="var(--font-mono,monospace)">12 projects</text>
+
+        <!-- Zone: Undri/Kondhwa (S) -->
+        <circle cx="300" cy="340" r="20" fill="rgba(46,204,138,0.06)" stroke="rgba(46,204,138,0.2)" stroke-width="1"/>
+        <circle cx="300" cy="340" r="6" fill="rgba(46,204,138,0.35)"/>
+        <text x="300" y="370" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-size="9" font-family="var(--font-body,sans-serif)" font-weight="600">Undri / Kondhwa</text>
+        <text x="300" y="382" text-anchor="middle" fill="#2ECC8A" font-size="9" font-family="var(--font-mono,monospace)">8 projects</text>
+
+        <!-- Zone: Pune City Centre -->
+        <circle cx="290" cy="220" r="18" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <circle cx="290" cy="220" r="5" fill="rgba(255,255,255,0.25)"/>
+        <text x="290" y="250" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="var(--font-body,sans-serif)">Pune City</text>
+
+        <!-- Compass -->
+        <text x="520" y="50" fill="rgba(255,255,255,0.2)" font-size="11" font-family="var(--font-mono,monospace)" text-anchor="middle">N</text>
+        <line x1="520" y1="32" x2="520" y2="56" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <polygon points="520,28 516,38 520,35 524,38" fill="rgba(255,255,255,0.2)"/>
+      </svg>
+    </div>
+
+    <!-- SIDEBAR: Project count by zone -->
+    <div style="border-left:1px solid var(--glass-border);padding:28px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;">
+      <div style="font-family:var(--font-mono,monospace);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--saffron);margin-bottom:8px;">// ALL ZONES</div>
+
+      <div class="map-zone-row active-zone">
+        <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.25);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s;">
+          <div><div style="font-size:13px;font-weight:700;color:#fff;">Kharadi</div><div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:1px;">East Pune · IT hub</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--saffron);font-family:var(--font-display,sans-serif);">22</div><div style="font-size:9px;color:rgba(255,107,53,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Baner / Balewadi</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">West Pune</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--saffron);font-family:var(--font-display,sans-serif);">18</div><div style="font-size:9px;color:rgba(255,107,53,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Hinjewadi</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">NW Pune · IT corridor</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--saffron);font-family:var(--font-display,sans-serif);">14</div><div style="font-size:9px;color:rgba(255,107,53,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Viman Nagar</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">NE Pune · Airport belt</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--saffron);font-family:var(--font-display,sans-serif);">11</div><div style="font-size:9px;color:rgba(255,107,53,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Hadapsar</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">SE Pune · Magarpatta</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--saffron);font-family:var(--font-display,sans-serif);">12</div><div style="font-size:9px;color:rgba(255,107,53,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Wakad</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">W Pune</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--saffron);font-family:var(--font-display,sans-serif);">9</div><div style="font-size:9px;color:rgba(255,107,53,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Undri / Kondhwa</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">S Pune · Value zone</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--mint);font-family:var(--font-display,sans-serif);">8</div><div style="font-size:9px;color:rgba(46,204,138,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Moshi / Chakan</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">N Pune · Emerging</div></div>
+          <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--mint);font-family:var(--font-display,sans-serif);">5</div><div style="font-size:9px;color:rgba(46,204,138,0.7);font-family:var(--font-mono,monospace);">projects</div></div>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div style="margin-top:8px;padding:14px 16px;background:linear-gradient(135deg,rgba(255,107,53,0.08),rgba(46,204,138,0.04));border:1px solid rgba(255,107,53,0.2);border-radius:12px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:500;">Total active projects</span>
+        <span style="font-size:22px;font-weight:800;color:#fff;font-family:var(--font-display,sans-serif);">109+</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAVINGS CALCULATOR -->
+<section style="padding-top:0">
+  <div class="savings-wrap">
+    <div class="savings-left">
+      <div class="section-label">// SAVINGS_CALCULATOR</div>
+      <h2>How much can<br>you <em>save?</em></h2>
+      <p>Our advisors typically negotiate 8–12% off the developer's listed price.</p>
+      <div class="slider-wrap">
+        <div class="slider-label"><span>Your budget</span><strong>₹80L</strong></div>
+        <input type="range" min="30" max="200" value="80" />
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:4px"><span>₹30L</span><span>₹2Cr</span></div>
+      </div>
+    </div>
+    <div class="savings-result">
+      <div class="savings-result-label">Your estimated saving</div>
+      <div class="savings-result-num">₹8L</div>
+      <div class="savings-result-sub">on a ₹80L budget · 10% avg negotiation</div>
+      <div class="vs-row">
+        <div class="vs-item"><div class="vs-item-label">With broker</div><div class="vs-item-val bad">₹80L + 2%</div></div>
+        <div class="vs-item"><div class="vs-item-label">With GharDhundo</div><div class="vs-item-val good">₹72L — ₹0 fees</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section style="padding-top:0">
+  <div class="section-label">// COMPARISON</div>
+  <h2 class="section-h2">Why <em>GharDhundo</em> wins</h2>
+  <table class="comp-table">
+    <thead><tr><th></th><th class="highlight">GharDhundo</th><th>Traditional Broker</th><th>Self Search</th></tr></thead>
+    <tbody>
+      <tr><td>RERA-verified projects</td><td class="highlight"><span class="check-yes">✓</span> 200+ projects</td><td><span class="check-partial">~</span> Limited</td><td><span class="check-no">✗</span> Manual work</td></tr>
+      <tr><td>AI-matched to your needs</td><td class="highlight"><span class="check-yes">✓</span> Instant</td><td><span class="check-no">✗</span> No</td><td><span class="check-no">✗</span> No</td></tr>
+      <tr><td>Price negotiation</td><td class="highlight"><span class="check-yes">✓</span> Expert advisors</td><td><span class="check-partial">~</span> Broker's interest</td><td><span class="check-no">✗</span> On your own</td></tr>
+      <tr><td>Brokerage fee</td><td class="highlight"><span class="check-yes">✓</span> Zero</td><td><span class="check-no">✗</span> 1–2% of price</td><td><span class="check-yes">✓</span> Zero</td></tr>
+      <tr><td>Avg saving vs listed price</td><td class="highlight"><span class="check-yes">✓</span> 8–12%</td><td><span class="check-no">✗</span> 0%</td><td><span class="check-partial">~</span> 2–4%</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="padding-top:0">
+  <div class="section-label">// BUYER_STORIES</div>
+  <h2 class="section-h2">Real buyers. <em>Real savings.</em></h2>
+  <div class="test-grid">
+    <div class="test-card">
+      <div class="test-saving">✓ Saved ₹9.5L</div>
+      <p class="test-quote">"I had no idea I could negotiate with a developer directly. GharDhundo's advisor got me ₹9.5L off the sticker price. I paid nothing extra — not even a brokerage."</p>
+      <div class="test-footer"><div class="test-avatar" style="background:rgba(255,107,53,0.15);color:#FF6B35">R</div><div><div class="test-name">Rahul Sharma</div><div class="test-project">3BHK · Kharadi</div><div class="test-verified">MahaRERA verified buyer</div></div></div>
+    </div>
+    <div class="test-card">
+      <div class="test-saving">✓ Saved ₹6L</div>
+      <p class="test-quote">"The AI matched me to projects I hadn't even considered. Possession dates, carpet area, sales velocity — everything was there. My advisor closed the deal in under a week."</p>
+      <div class="test-footer"><div class="test-avatar" style="background:rgba(46,204,138,0.12);color:#2ECC8A">P</div><div><div class="test-name">Priya Mehta</div><div class="test-project">2BHK · Baner</div><div class="test-verified">MahaRERA verified buyer</div></div></div>
+    </div>
+    <div class="test-card">
+      <div class="test-saving">✓ Saved ₹12L</div>
+      <p class="test-quote">"Spent 6 months on portals with no luck. GharDhundo matched me in 2 minutes and negotiated ₹12L off a ready-to-move flat in Wakad. Zero brokerage."</p>
+      <div class="test-footer"><div class="test-avatar" style="background:rgba(255,200,50,0.1);color:#FFC832">A</div><div><div class="test-name">Ankit Verma</div><div class="test-project">3BHK · Wakad</div><div class="test-verified">MahaRERA verified buyer</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="padding-top:0">
+  <div style="display:grid;grid-template-columns:300px 1fr;gap:64px;align-items:start;">
+    <div>
+      <div class="section-label">// FAQ</div>
+      <h2 class="section-h2" style="font-size:36px;">Questions<br>we get <em>a lot</em></h2>
+      <p style="font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7;margin-top:16px;">Still unsure? Talk to an advisor — they're real humans, not bots.</p>
+      <a href="#" class="btn-primary" style="font-size:13px;padding:12px 24px;margin-top:28px;display:inline-flex;">Talk to an Advisor →</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+
+      <!-- FAQ Item 1 - open -->
+      <div style="background:rgba(255,107,53,0.06);border:1px solid rgba(255,107,53,0.2);border-radius:16px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;cursor:pointer;">
+          <span style="font-size:15px;font-weight:600;color:#fff;">Is GharDhundo really free? No hidden fees?</span>
+          <span style="color:var(--saffron);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">−</span>
+        </div>
+        <div style="padding:0 24px 20px;font-size:14px;color:rgba(255,255,255,0.65);line-height:1.75;border-top:1px solid rgba(255,107,53,0.1);">
+          Yes, completely free. We're paid directly by developers — not by you. You pay zero brokerage, zero platform fees, zero consultation charges. Our incentive is to get you the best offer so the developer closes the deal.
+        </div>
+      </div>
+
+      <!-- FAQ Item 2 -->
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;cursor:pointer;">
+          <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.85);">How does the AI match work?</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">+</span>
+        </div>
+      </div>
+
+      <!-- FAQ Item 3 -->
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;cursor:pointer;">
+          <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.85);">Are all projects MahaRERA registered?</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">+</span>
+        </div>
+      </div>
+
+      <!-- FAQ Item 4 -->
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;cursor:pointer;">
+          <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.85);">How much can I realistically save?</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">+</span>
+        </div>
+      </div>
+
+      <!-- FAQ Item 5 -->
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;cursor:pointer;">
+          <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.85);">What happens after I get matched?</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">+</span>
+        </div>
+      </div>
+
+      <!-- FAQ Item 6 -->
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;cursor:pointer;">
+          <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.85);">Do I have to visit the site or can I do everything online?</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">+</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<div class="footer-cta-wrap">
+  <div class="footer-live-stat">
+    <span class="live-dot"></span>
+    <span><strong>17 buyers</strong> found their match this week</span>
+  </div>
+  <h2 class="footer-h2">Your best offer is<br><em>one step away.</em></h2>
+  <p class="footer-sub">Zero brokerage. AI-matched. Advisor-negotiated. Only in Pune.</p>
+  <div class="footer-btn-row">
+    <a href="#" class="btn-primary" style="font-size:15px">Find My Perfect Home →</a>
+    <a href="#" class="btn-secondary">Talk to an Advisor</a>
+  </div>
+</div>
+
+<footer>
+  <div class="logo">Ghar<span>Dhundo</span></div>
+  <div><a href="#">MahaRERA</a><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+</footer>
+
+</div><!-- /page-content -->
+
+</body>
+</html>
