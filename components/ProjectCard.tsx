@@ -85,6 +85,24 @@ export function ProjectCard({ project }: Props) {
         )}
       </div>
 
+      {soldPct !== null && (
+        <div>
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-white/25 uppercase tracking-wider text-[9px]">Demand</span>
+            <span className="text-[10px] text-white/50">{soldPct}% booked</span>
+          </div>
+          <div className="w-full h-[3px] rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }}>
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: `${Math.min(soldPct, 100)}%`,
+                background: 'linear-gradient(90deg, #FF6B35, #F0A500)',
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <span className="text-[12px] text-white/40 group-hover:text-saffron transition-colors font-medium">
           Get Best Offer →

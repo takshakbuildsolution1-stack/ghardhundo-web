@@ -39,7 +39,7 @@ export default async function Home() {
         <HowItWorks />
         <FeaturedProjects projects={projects} />
         <SavingsCalculator />
-        <PuneMap />
+        <PuneMap projects={projects} />
         <ComparisonTable />
         <Testimonials />
         <FAQ />
